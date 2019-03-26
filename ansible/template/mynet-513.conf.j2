@@ -1,0 +1,14 @@
+upstream mynet-513 {
+ ip_hash;   
+ server 192.168.100.81;
+ server 192.168.100.82;
+}
+
+server {
+  listen 80;
+  server_name mynet-513.com www.mynet-513.com;
+  proxy_set_header Host $http_host;
+  location / {
+    proxy_pass http://mynet-513;
+  }
+}

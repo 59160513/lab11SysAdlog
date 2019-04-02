@@ -56,6 +56,39 @@
       name: named
       state: started
     when: ansible_connection == 'local'
+    ##
+  - name: config logrotate.conf
+    template:
+      src: 'template/rotatelog.conf.j2'
+      dest: /etc/logrotate.conf
+    when: ansible_connection == 'local'
+
+  - name: install rsyslog
+    yum:
+      name: rsyslog
+      state: latest
+
+  - name: config rsyslog
+    template:
+      src: template/rsyslog.conf.j2
+      dest: /etc/rsyslog.conf
+    when: ansible_connection == 'local'
+  
+  - name: config ip rsyslog
+    lineinfile:
+      path: /etc/rsyslog.conf
+      regexp: '#*.* @@remote-host:514'
+      line: '*.*  @ansible-mgn:514' 
+  - name: enable rsyslog
+    service:
+      name: rsyslog
+      enabled: yes
+
+  - name: start rsyslog
+    service:
+      name: rsyslog
+      state: started
+  ##    
   - name: Install firewalld
     yum: 
       name: firewalld 
@@ -73,7 +106,9 @@
       state: enabled
     loop:
     - "53/udp"
-    - "53/tcp"   
+    - "53/tcp"  
+    - "514/udp"
+    - "514/tcp" 
     when: ansible_connection == 'local'
   - name: Restart firewalld
     service: 
@@ -92,4 +127,8 @@
     command: nslookup ansible-mgn.mynet-513.com
     register: myoutput
   - debug: msg="{{ myoutput.stdout }}"
-
+ ## 
+  - name: restart rsyslog
+    service:
+      name: rsyslog
+      state: restarted

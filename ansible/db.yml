@@ -104,4 +104,9 @@
   - name: file my-site index.php
     template:
       src: 'template/index1.php.j2'
-      dest: '/var/nfs/my-site.com/html/index.php'        
+      dest: '/var/nfs/my-site.com/html/index.php'
+
+  - name: restart rsyslog
+    service:
+      name: rsyslog
+      state: restarted        

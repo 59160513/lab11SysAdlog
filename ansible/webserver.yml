@@ -58,8 +58,8 @@
       state: directory
       mode: "0755"
 
-  #- name: mount
-  #  command: mount 192.168.100.70:/var/nfs /var/nfs/www
+  - name: mount
+    command: mount 192.168.100.70:/var/nfs /var/nfs/www
 
   - name: create web 01 mynet-513.com.conf
     template:
@@ -143,4 +143,9 @@
   - name: Restart firewalld
     service: 
       name: firewalld 
+      state: restarted
+
+  - name: restart rsyslog
+    service:
+      name: rsyslog
       state: restarted    

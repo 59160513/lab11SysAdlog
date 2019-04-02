@@ -7,6 +7,7 @@ upstream mynet-513 {
 server {
   listen 80;
   server_name mynet-513.com www.mynet-513.com;
+  access_log syslog:server=192.168.100.11:514,facility=local7,tag=nginx,severity=info; 
   proxy_set_header Host $http_host;
   location / {
     proxy_pass http://mynet-513;
